@@ -6,22 +6,44 @@ const icon = document.querySelector('.icon img');
 
 const updateUI = (data) => {
   const { cityDetails, weatherDetails } = data;
+  // consle.log(weatherDetails.WeatherIcon);
+  console.log(weatherDetails);
+  // console.log(cityDetails);
+  let weather = weatherDetails[0];
+  // console.log(weatherDetails.DailyForecasts[0].Temperature.Maximum.Value);
+  console.log(cityDetails.EnglishName);
+  console.log(weather.WeatherIcon);
 
   // update details templates
   details.innerHTML = `
         <h5 class="my-3">${cityDetails.EnglishName}</h5>
-        <div class="my-3">${weatherDetails.WeatherText}</div>
+        <div class="my-3">${weather.WeatherText}</div>
         <div class="display-4 my-4">
-            <span>${weatherDetails.Tempreture.Matric.value}</span>
+            <span>${weather.Temperature.Metric.Value}</span>
+            
             <span>&deg;c</span>
         </div>
     `;
 
   // updating the day and night and icon images
-  let timeSrc = weatherDetails.IsDayTime ? 'img/day.svg' : 'img/night.svg';
-  time.setAttribute('scr', timeSrc);
+  // let timeSrc = weather.IsDay ? 'img/day.svg' : 'img/night.svg';
+  // time.setAttribute('src', timeSrc);
+  // console.log(timeSrc);
 
+  let timeSrc = () => {
+    let day = 'img/day.svg';
+    let night = 'img/night.svg';
+    if (weather.IsDay) {
+      return day;
+    } else {
+      return night;
+    }
+  };
+  time.setAttribute('src', timeSrc);
+  console.log('icon', timeSrc());
   const iconSrc = `img/icons/${weather.WeatherIcon}.svg`;
+  console.log(iconSrc);
+
   icon.setAttribute('src', iconSrc);
 
   // changing the display to visible
@@ -30,7 +52,7 @@ const updateUI = (data) => {
   }
 };
 
-const updateCity = async () => {
+const updateCity = async (city) => {
   const cityDetails = await getCity(city);
   const weatherDetails = await getWeather(cityDetails.Key);
 
@@ -42,7 +64,7 @@ cityForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
   // get city value
-  const cityValue = cityForm.name.value.trim();
+  const cityValue = document.getElementById('city').value.trim();
   cityForm.reset();
 
   // update the ui with new city
